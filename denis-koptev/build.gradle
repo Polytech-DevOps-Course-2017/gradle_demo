@@ -17,16 +17,16 @@ dependencies {
 mainClassName = 'Main'
 
 jar {
-	manifest.attributes("Main-Class": mainClassName);
+    manifest.attributes("Main-Class": mainClassName);
 }
 
 task setWrapper(type: Wrapper) {
-	description "Task generates gradle wrapper"
-	gradleVersion = "2.0"
+    description "Task generates gradle wrapper"
+    gradleVersion = "2.0"
 }
 
 task createJar(type: Jar, dependsOn: compileJava) {
-	description "Task generates JAR executable from .class products"
+    description "Task generates JAR executable from .class products"
 
     manifest {
         attributes "Main-Class": mainClassName
@@ -38,7 +38,7 @@ task createJar(type: Jar, dependsOn: compileJava) {
 }
 
 task execApp(type: JavaExec, dependsOn: classes) {
-	description "Task executes application using .class products"
+    description "Task executes application using .class products"
 
     main = 'Main'
     classpath sourceSets.main.output.classesDir
@@ -46,7 +46,7 @@ task execApp(type: JavaExec, dependsOn: classes) {
 }
 
 task packZip(type: Zip, dependsOn: createJar) {
-	description "Task generates ZIP archieve with classes, jars and libs"
+    description "Task generates ZIP archieve with classes, jars and libs"
 
     from (configurations.compile) {
         into ('libs/')
