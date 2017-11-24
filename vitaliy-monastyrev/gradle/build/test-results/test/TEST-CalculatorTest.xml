@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="CalculatorTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2017-11-24T00:04:24" hostname="MrSandman" time="0.005">
+<testsuite name="CalculatorTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2017-11-24T01:12:00" hostname="MrSandman" time="0.008">
   <properties/>
-  <testcase name="testSum" classname="CalculatorTest" time="0.002"/>
-  <testcase name="testMinus" classname="CalculatorTest" time="0.001"/>
+  <testcase name="testSum" classname="CalculatorTest" time="0.003"/>
+  <testcase name="testMinus" classname="CalculatorTest" time="0.002"/>
   <testcase name="testDivide" classname="CalculatorTest" time="0.0"/>
   <testcase name="testMultiple" classname="CalculatorTest" time="0.0"/>
   <testcase name="testDivideWillThrowExceptionWhenDivideOnZero" classname="CalculatorTest" time="0.001"/>
