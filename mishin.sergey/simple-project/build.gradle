@@ -1,0 +1,87 @@
+group 'com.sergey-mishin.simple'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'application'
+apply plugin: 'java'
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
+mainClassName = "HelloWorld"
+
+// version = "sorter-RELEASE"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task wrapper(type: Wrapper) {
+    description = "Regenerate the gradle wrapper"
+    gradleVersion = '3.1'
+}
+
+defaultTasks 'all'
+
+task all(dependsOn: ['createJarCustom', 'zipCustom'])
+
+task taskRun {
+    doLast {
+        println 'Gradle pipeline started...'
+    }
+}
+
+tasks.withType(Jar){
+    manifest {
+        attributes(
+                'Main-Class': mainClassName,
+                'Implementation-Title': 'Some Lists Sorter',
+                'Implementation-Vendor': 'Sergey Mishin',
+                'Implementation-Version': version,
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+        )
+    }
+}
+
+task createJarCustom(type: Jar, dependsOn: compileJava) {
+    archiveName = 'sorter.jar'
+    destinationDir = file("${buildDir}/bin")
+    from sourceSets.main.output
+    println("Jar saved to $destinationDir")
+}
+
+task zipCustom(type: Zip, dependsOn: createJarCustom) {
+    from ("${buildDir}/bin") {
+        into('/')
+    }
+
+    doLast {
+        println("Zip saved to './build/distributions/simple-project-$version'")
+    }
+}
+
+task runCustom(type: JavaExec, dependsOn: classes) {
+    main = "HelloWorld"
+    classpath sourceSets.main.output.classesDir
+    classpath configurations.runtime
+
+    args "src/main/resources/data2.txt"
+}
+
+test {
+    testLogging.showStandardStreams = true
+
+    include '**'
+
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
+}
