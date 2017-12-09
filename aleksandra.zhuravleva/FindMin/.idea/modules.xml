@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindMin.iml" filepath="$PROJECT_DIR$/.idea/modules/FindMin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindMin_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FindMin_main.iml" group="FindMin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindMin_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FindMin_test.iml" group="FindMin" />
+    </modules>
+  </component>
+</project>

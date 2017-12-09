@@ -1,0 +1,88 @@
+group 'com.sashatoday.project'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+tasks.withType(Jar){
+    manifest {
+        attributes(
+                'Main-Class': "FindMin",
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+        )
+    }
+}
+
+task zipIt(type: Zip, dependsOn: jar) {
+    from ("${buildDir}/libs") {
+        into('/')
+    }
+
+    doLast {
+        println("Zipped to './build/distributions/' directory")
+    }
+}
+
+test {
+    testLogging.showStandardStreams = true
+
+    include '**'
+
+    beforeTest { descriptor ->
+        logger.lifecycle("Running '" + descriptor + "'...")
+    }
+
+    onOutput { descriptor, event ->
+        logger.lifecycle("From test '" + descriptor + "': " + event.message)
+    }
+}
+
+task runDummyTest(type:Exec, dependsOn: jar) {
+    commandLine 'java', '-jar', './build/libs/FindMin-1.0-SNAPSHOT.jar', '1 2 3 4 5 -6'
+
+    standardOutput = new ByteArrayOutputStream()
+
+    doLast {
+        def outp = standardOutput.toString();
+        println("\nStandard Output: $outp")
+    }
+}
+
+task createDockerfile(dependsOn: runDummyTest) {
+    doLast {
+        new File("Dockerfile").text = """
+FROM ubuntu:latest
+
+LABEL maintainer "Aleksandra Zhuravleva <guravleva.aleksandra@gmail.com>"
+
+USER root
+
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jre maven
+
+COPY ./build/libs/FindMin-1.0-SNAPSHOT.jar FindMin-1.0-SNAPSHOT.jar
+
+ENTRYPOINT ["java", "-jar", "FindMin-1.0-SNAPSHOT.jar"]
+CMD ["1 2 3 4 5 6 7 8 9 0"]
+
+"""
+    }
+}
+
+task deployIt(type:Exec, dependsOn: createDockerfile) {
+    commandLine 'docker', 'build', '-t', 'sashadock/gradle_demo', '.'
+
+    doLast {
+        println("Dockerized!")
+    }
+}
