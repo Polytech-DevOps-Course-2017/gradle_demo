@@ -1,0 +1,53 @@
+apply plugin : 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "joda-time:joda-time:2.2"
+}
+
+jar {
+    manifest {
+        attributes(
+            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+            'Main-Class': 'project.Dining'
+        )
+    }
+}
+
+task startDining(type: JavaExec, dependsOn: classes) {
+    description "Start program from task"
+    println("Dining started")
+    main = 'project.Dining'
+    classpath sourceSets.main.output.classesDirs
+    classpath configurations.runtime
+}
+
+task copySrc(type: Copy, dependsOn: startDining) {
+        description 'Copies the src directory to the out directory.'
+        from 'src'
+        into 'out'
+        include('**/*.txt', '**/*.xml', '**/*.properties')
+        println("Copied src to out")
+}
+
+task createZip(type: Zip, dependsOn: copySrc) {
+    description 'Creates .zip archive'
+    from 'src'
+    println(".zip archive created")
+}
+
+task endTasks(dependsOn: createZip) {
+    description 'Final task'
+    println 'All tasks done'
+}
+
+test {
+    testLogging {
+        events 'started', 'passed'
+    }
+}
+
+mainClassName = 'project.Dining'
